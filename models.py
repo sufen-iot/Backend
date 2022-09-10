@@ -1,18 +1,19 @@
 from time import time
 import uuid
 from db import Base, engine
-from sqlalchemy import Column, Text, String, Float, TIMESTAMP, BigInteger, Boolean, Integer
+from sqlalchemy import Column
+from sqlalchemy.dialects.mysql import BIGINT, VARCHAR, TIMESTAMP, LONGTEXT, INTEGER, DOUBLE, BOOLEAN
 
 class DataModel(Base):
     __tablename__ = "sufen"
     
-    id = Column(String(length=100), primary_key=True, default=lambda : uuid.uuid1().int, index=True)
+    id = Column(VARCHAR(length=100), primary_key=True, default=lambda : uuid.uuid1().int, index=True)
     time = Column(TIMESTAMP, default=lambda :time())
-    image = Column(Text)
-    status = Column(Boolean, default=False)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    heading = Column(Integer, default=0)
+    image = Column(LONGTEXT)
+    status = Column(BOOLEAN, default=False)
+    latitude = Column(DOUBLE, nullable=False)
+    longitude = Column(DOUBLE, nullable=False)
+    heading = Column(INTEGER, default=0)
     
     
     def __init__(self, id, time, image, status, latitude, longitude, heading):
