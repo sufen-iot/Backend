@@ -31,6 +31,10 @@ def get_db():
    finally:
        db.close()
 
+@app.get("/hello")
+def hello():
+    return {"message": "Hello World", "status": "success"}
+
 @app.post("/accident")
 async def postData(data: RequestModel, db: Session = Depends(get_db)):
     data_dict = data.dict()
