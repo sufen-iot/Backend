@@ -1,3 +1,4 @@
+from math import cos, tan
 from time import time
 from uuid import uuid1, uuid4
 from fastapi import FastAPI, Depends
@@ -30,18 +31,40 @@ def get_db():
        yield db
    finally:
        db.close()
-
-@app.get("/hello")
-def hello():
-    return {"message": "Hello World", "status": "success"}
+       
+def calculate(heading, latitude, longitude):
+    latitude_meter = latitude * 111132.954 
+    longitude_meter  = 40075000 * cos(latitude) / 360 * longitude
+    if heading < 90:
+        longitude_meter += 100
+        latitude_meter += tan(heading) * 100
+        pass
+    elif heading < 180:
+        heading -= 90
+        latitude_meter += 100
+        longitude_meter -= tan(heading) * 100
+        pass
+    elif heading < 270:
+        heading -= 180
+        longitude_meter -= 100
+        latitude_meter -= tan(heading) * 100
+        pass
+    else:
+        heading -= 270
+        latitude_meter -= 100
+        longitude_meter += tan(heading) * 100
+        pass
+    
+    return (latitude_meter / 111132.954 , longitude_meter / (40075000 * cos(latitude) / 360))
 
 @app.post("/accident")
 async def postData(data: RequestModel, db: Session = Depends(get_db)):
     data_dict = data.dict()
-    new_data = DataModel(id=str(uuid4()), time=func.now(), status=False, 
-                        latitude=data_dict["latitude"], 
-                        longitude=data_dict["longitude"], 
-                        heading=data_dict["heading"], image=data_dict["img"])
+    new_latitude, new_longitude = calculate(data_dict["heading"], data_dict["latitude"], data_dict["longitude"])
+    new_data = DataModel(id=str(uuid4()), time=func.now(), status=None, 
+                        latitude=new_latitude, 
+                        longitude=new_longitude, 
+                        image=data_dict["img"])
     db.add(new_data)
     db.commit()
     db.refresh(new_data)
