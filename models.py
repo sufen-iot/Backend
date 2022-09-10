@@ -10,22 +10,20 @@ class DataModel(Base):
     id = Column(VARCHAR(length=100), primary_key=True, default=lambda : uuid.uuid1().int, index=True)
     time = Column(TIMESTAMP, default=lambda :time())
     image = Column(LONGTEXT)
-    status = Column(BOOLEAN, default=False)
+    status = Column(BOOLEAN, nullable=True)
     latitude = Column(DOUBLE, nullable=False)
     longitude = Column(DOUBLE, nullable=False)
-    heading = Column(INTEGER, default=0)
     
     
-    def __init__(self, id, time, image, status, latitude, longitude, heading):
+    def __init__(self, id, time, image, status, latitude, longitude):
         self.id = id
         self.time = time
         self.image = image
         self.status = status
         self.latitude = latitude
         self.longitude = longitude
-        self.heading = heading
 
     def __repr__(self):
-        return f"<sufen('{self.id}', '{self.time}', '{self.image}', '{self.status}', '{self.latitude}', '{self.longitude}', '{self.heading}')>"
+        return f"<sufen('{self.id}', '{self.time}', '{self.image}', '{self.status}', '{self.latitude}', '{self.longitude}')>"
     
 Base.metadata.create_all(bind=engine)
