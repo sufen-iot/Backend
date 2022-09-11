@@ -72,7 +72,7 @@ async def postData(data: RequestModel, db: Session = Depends(get_db)):
 
 @app.get("/accident")
 async def getAllAccidentData(db: Session = Depends(get_db)):
-    data = db.query(DataModel).filter(DataModel.status==None).order_by(DataModel.time).all()
+    data = db.query(DataModel).filter(DataModel.status==None).order_by(DataModel.time.desc()).all()
     return {"history": data, "totalCount": len(data)}
 
 
