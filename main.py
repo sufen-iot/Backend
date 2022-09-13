@@ -2,12 +2,13 @@ from math import cos, tan
 from time import time
 from uuid import uuid1, uuid4
 from fastapi import FastAPI, Depends
-from schema import RequestModel, ResponseModel, PutModel
+from schema import RequestModel, RequestHardwareModel, ResponseModel, PutModel
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from models import DataModel
 from db import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
+import bson
 
 app = FastAPI()
 
@@ -70,6 +71,22 @@ async def postData(data: RequestModel, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_data)
     return {"data": new_data, "status": "success"}
+
+@app.post("/hardware")
+async def postHardwareData(data: RequestHardwareModel):
+    data_dict = data.dict()
+    f = open("./hardware.bin", "w")
+    f.truncate()
+    f.write(bson.dumps(data_dict))
+    f.close()
+    return {"data": data_dict, "status": "success"}
+
+@app.get("/hardware")
+async def getHardwareData():
+    f = open("./hardware.bin", "r")
+    data = f.read()
+    f.close()
+    return {"data": bson.loads(data), "status": "success"}
 
 @app.get("/accident")
 async def getAllAccidentData(db: Session = Depends(get_db)):

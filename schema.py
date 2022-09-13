@@ -1,3 +1,5 @@
+import string
+from turtle import st
 from pydantic import BaseModel
 
 class RequestModel(BaseModel):
@@ -5,6 +7,16 @@ class RequestModel(BaseModel):
     latitude: float
     longitude:float
     img: str
+    
+    class Config:
+        orm_mode=True
+
+class RequestHardwareModel(BaseModel):
+    cpu: str
+    ram: str
+    os: str
+    kernel: str
+    uptime: str
     
     class Config:
         orm_mode=True
