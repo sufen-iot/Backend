@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 from models import DataModel
 from db import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -76,7 +77,7 @@ async def postHardwareData(data: RequestHardwareModel):
     data_dict = data.dict()
     f = open("./hardware.bin", "w")
     f.truncate()
-    f.write(data_dict)
+    f.write(json.dumps(data_dict))
     f.close()
     return {"data": data_dict, "status": "success"}
 
@@ -85,7 +86,7 @@ async def getHardwareData():
     f = open("./hardware.bin", "r")
     data = f.read()
     f.close()
-    return {"data": data, "status": "success"}
+    return {"data": json.loads(data), "status": "success"}
 
 @app.get("/accident")
 async def getAllAccidentData(db: Session = Depends(get_db)):
