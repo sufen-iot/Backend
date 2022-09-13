@@ -7,9 +7,6 @@ class RequestModel(BaseModel):
     latitude: float
     longitude:float
     img: str
-    
-    class Config:
-        orm_mode=True
 
 class RequestHardwareModel(BaseModel):
     cpu: str
@@ -17,7 +14,7 @@ class RequestHardwareModel(BaseModel):
     os: str
     kernel: str
     uptime: str
-    
+
     class Config:
         orm_mode=True
         
