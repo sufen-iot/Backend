@@ -1,5 +1,3 @@
-import string
-from turtle import st
 from pydantic import BaseModel
 
 class RequestModel(BaseModel):
