@@ -75,7 +75,7 @@ async def postData(data: RequestModel, db: Session = Depends(get_db)):
 @app.post("/hardware")
 async def postHardwareData(data: RequestHardwareModel):
     data_dict = data.dict()
-    f = open("./hardware.bin", "w")
+    f = open("./hardware.json", "w")
     f.truncate()
     f.write(json.dumps(data_dict))
     f.close()
@@ -83,7 +83,7 @@ async def postHardwareData(data: RequestHardwareModel):
 
 @app.get("/hardware")
 async def getHardwareData():
-    f = open("./hardware.bin", "r")
+    f = open("./hardware.json", "r")
     data = f.read()
     f.close()
     return {"data": json.loads(data), "status": "success"}
